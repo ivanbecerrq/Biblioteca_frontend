@@ -1,69 +1,83 @@
-import { dateTransform } from '@/utils/dateTransform'
+'use client'
 
-async function getData () {
-  const res = await fetch('http://localhost:3000/api/users')
+import { useRouter } from 'next/navigation'
+import styles from './styles.module.scss'
 
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
+export default function HomePage() {
+  const router = useRouter()
+
+  const handleLogout = () => {
+    console.log('Cerrar Sesión')
+    router.push('/') // Redireccionar al usuario a la página de inicio de sesión
   }
 
-  return res.json()
-}
-
-export default async function HomePage () {
-  const { users } = await getData()
+  const books = [
+    {
+      id: 1,
+      image: '/path/to/image1.jpg',
+      title: 'A lo romano y Arrestado por alienígena',
+      genre: 'Comic',
+      available: true
+    },
+    {
+      id: 2,
+      image: '/path/to/image2.jpg',
+      title: 'Ecofuturismo',
+      genre: 'Cuentos SCI-FI',
+      available: true
+    },
+    {
+      id: 3,
+      image: '/path/to/image3.jpg',
+      title: 'Si des de casa veus un drac',
+      genre: 'Comic',
+      available: false
+    },
+    // Añadir más libros aquí...
+  ]
 
   return (
-    <main>
-      <table className='text-left border m-[1rem] text-sm font-light'>
-        <thead className='border-b bg-white font-medium dark:border-neutral-500 dark:bg-neutral-600'>
-          <tr className='border-b text-center'>
-            <th scope='col' className='px-6 py-4'>
-              Tabla de Usuarios
-            </th>
-          </tr>
-
-          <tr>
-            <th scope='col' className='px-6 py-4'>
-              #
-            </th>
-            <th scope='col' className='px-6 py-4'>
-              Id
-            </th>
-            <th scope='col' className='px-6 py-4'>
-              Email
-            </th>
-            <th scope='col' className='px-6 py-4'>
-              Creado
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {users?.map((user: any, index: number) => {
-            const isEven = index % 2 === 0
-
-            const bg = isEven
-              ? 'bg-white dark:bg-neutral-600'
-              : 'bg-neutral-100 dark:bg-neutral-700'
-
-            return (
-              <tr
-                key={user._id}
-                className={`${bg} border-b font-medium dark:border-neutral-500`}
-              >
-                <td className='whitespace-nowrap px-6 py-4 font-medium'>
-                  {index + 1}
-                </td>
-                <td className='whitespace-nowrap px-6 py-4'>{user._id}</td>
-                <td className='whitespace-nowrap px-6 py-4'>{user.email}</td>
-                <td className='whitespace-nowrap px-6 py-4'>
-                  {dateTransform(user.createdAt)}
-                </td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+    <main className={styles.main}>
+      <nav className={styles.nav}>
+        <div className={styles.buttonContainer}>
+          <button
+            onClick={() => router.push('/books')}
+            className={`${styles.button} ${styles.booksButton}`}
+          >
+            Libros
+          </button>
+          <button
+            onClick={() => router.push('/loans')}
+            className={`${styles.button} ${styles.loansButton}`}
+          >
+            Préstamos
+          </button>
+          <button
+            onClick={handleLogout}
+            className={`${styles.button} ${styles.logoutButton}`}
+          >
+            Cerrar Sesión
+          </button>
+        </div>
+      </nav>
+      <section className={styles.newReleases}>
+        <h2>Novedades</h2>
+        <div className={styles.booksGrid}>
+          {books.map(book => (
+            <div key={book.id} className={styles.bookCard}>
+              <img src={book.image} alt={book.title} className={styles.bookImage} />
+              <div className={styles.bookDetails}>
+                <h3 className={styles.bookTitle}>{book.title}</h3>
+                <p className={styles.bookGenre}>{book.genre}</p>
+                <p className={book.available ? styles.bookAvailable : styles.bookUnavailable}>
+                  {book.available ? 'Disponible' : 'No disponible'}
+                </p>
+                <button className={styles.detailsButton}>Detalles</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </main>
   )
 }

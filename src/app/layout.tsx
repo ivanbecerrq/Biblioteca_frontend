@@ -6,8 +6,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Auth Nextjs 13',
-  description: 'Sistema de autenticacion con Nextjs 13'
+  title: 'biblioteca',
+  description: 'Sistema de autenticacion con Nextjs 14'
 }
 
 interface RootLayoutProps {

@@ -6,6 +6,12 @@ import { messages } from "@/utils/messages";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
+// Función para validar la contraseña
+const validatePassword = (password: string) => {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return regex.test(password);
+};
+
 export async function POST(request: NextRequest) {
   try {
     await connectMongoDB();
@@ -42,6 +48,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { message: messages.error.passwordsNotMatch },
         { status: 400 }
+      );
+    }
+
+    // Validar que la contraseña cumple con los requisitos
+    if (!validatePassword(password)) {
+      return NextResponse.json(
+        {
+          message: "La contraseña debe tener al menos 8 caracteres, incluir al menos una letra mayúscula, una letra minúscula, un numero y un carácter especial",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
